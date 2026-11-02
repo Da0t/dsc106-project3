@@ -2,7 +2,7 @@
 // warming first reaches +2 °C.
 import * as d3 from 'https://cdn.jsdelivr.net/npm/d3@7.9.0/+esm';
 import { LIKELY, hasRun, isIncluded, groupOf, medianYear, fmtLevel, fmtTcr } from '../lib/core.js';
-import { makeChart, xAxis, axisTitles, duration } from '../lib/ui.js';
+import { makeChart, xAxis, axisTitles, duration, placeLabel, textBox } from '../lib/ui.js';
 
 export function createArrivalPanel(root, ctx) {
   const { data, store, tooltip } = ctx;
@@ -20,11 +20,12 @@ export function createArrivalPanel(root, ctx) {
 
   // Rows inside the IPCC likely range share the wash used for that range in view 1.
   const likely = rows.filter((m) => groupOf(m) === 'likely');
+  let likelyLabel = null;
   if (likely.length) {
     const top = yb(likely[0].id), bottom = yb(likely[likely.length - 1].id) + yb.bandwidth();
     g.append('rect').attr('class', 'wash').attr('x', 0).attr('width', w).attr('y', top).attr('height', bottom - top);
-    g.append('text').attr('class', 'label-muted').attr('x', 6).attr('y', bottom - 6).attr('text-anchor', 'start')
-      .text('IPCC likely range');
+    likelyLabel = g.append('text').attr('class', 'label-muted').attr('x', 6).attr('y', bottom - 6)
+      .attr('text-anchor', 'start').text('IPCC likely range');
   }
   const gGrid = g.append('g').attr('class', 'grid');
   const updateX = xAxis(g, h);
@@ -88,6 +89,7 @@ export function createArrivalPanel(root, ctx) {
       return {
         key: grp.key,
         median: medianYear(members.map((d) => (d.status === 'year' ? d.year : Infinity))),
+        rows: groupRows.map((d) => d.m),
         top: groupRows.length ? yb(groupRows[0].m.id) : 0,
         bottom: groupRows.length ? yb(groupRows[groupRows.length - 1].m.id) + yb.bandwidth() : 0,
       };
@@ -102,10 +104,18 @@ export function createArrivalPanel(root, ctx) {
     const mx = (d) => (Number.isFinite(d.median) ? x(d.median) : laterX);
     med.select('line').attr('stroke', ctx.pal.ink).transition().duration(dur)
       .attr('x1', mx).attr('x2', mx).attr('y1', (d) => d.top + 1).attr('y2', (d) => d.bottom - 1);
-    med.select('text').attr('text-anchor', (d) => (Number.isFinite(d.median) ? 'start' : 'end'))
+    // Each label sits beside its line, in the first row (from the top) where it covers no dot or label.
+    const dotsAt = dots.map((d) => [d.status === 'year' ? x(d.year) : laterX, cy(d.m)]);
+    const taken = likelyLabel ? [textBox(likelyLabel)] : [];
+    med.select('text').text((d) => (Number.isFinite(d.median) ? `${Math.round(d.median)}` : 'after 2100'))
+      .each(function (d) {
+        const sides = Number.isFinite(d.median) ? [[5, 'start'], [-5, 'end']] : [[-9, 'end']];
+        const spots = d.rows.flatMap((m) => sides.map(([dx, anchor]) => ({ x: mx(d) + dx, y: cy(m) + 4, anchor })));
+        d.spot = placeLabel(spots, this.getComputedTextLength(), { dots: dotsAt, boxes: taken });
+      })
+      .attr('text-anchor', (d) => d.spot.anchor)
       .transition().duration(dur)
-      .attr('x', (d) => (Number.isFinite(d.median) ? mx(d) + 5 : mx(d) - 9)).attr('y', (d) => d.top + 11)
-      .text((d) => (Number.isFinite(d.median) ? `${Math.round(d.median)}` : 'after 2100'));
+      .attr('x', (d) => d.spot.x).attr('y', (d) => d.spot.y);
     current = { items, groups };
 
     const [hot, rest] = groups;
@@ -128,13 +138,20 @@ export function createArrivalPanel(root, ctx) {
 
   function highlight(id) {
     gFocus.selectAll('*').remove();
+    gMedians.selectAll('text').attr('opacity', null);
     const d = id && current?.items.find((it) => it.m.id === id);
     if (!d || d.status === 'none') return;
     const cx = d.status === 'year' ? x(d.year) : laterX;
     gFocus.append('circle').attr('cx', cx).attr('cy', cy(d.m)).attr('r', 7.5)
       .attr('fill', 'none').attr('stroke', ctx.pal.ink).attr('stroke-width', 1.25);
-    gFocus.append('text').attr('class', 'label-strong halo').attr('x', cx - 11).attr('y', cy(d.m) + 4)
+    const name = gFocus.append('text').attr('class', 'label-strong halo').attr('x', cx - 11).attr('y', cy(d.m) + 4)
       .attr('text-anchor', 'end').text(d.m.id);
+    // The hovered model's name wins: a median label it would cover is hidden until the hover ends.
+    const [a0, b0, a1, b1] = textBox(name);
+    gMedians.selectAll('text').attr('opacity', function () {
+      const [c0, d0, c1, d1] = textBox(d3.select(this));
+      return a0 < c1 && c0 < a1 && b0 < d1 && d0 < b1 ? 0 : null;
+    });
   }
 
   return {
