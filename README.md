@@ -8,6 +8,9 @@ reached sooner.
 **Question:** Is CMIP6's scariest future driven by models that run too hot, and does that change what a warmer
 world looks like, or only when we get there?
 
+**Live site:** <https://da0t.github.io/dsc106-project3/> (exploratory graphs:
+<https://da0t.github.io/dsc106-project3/checkpoint.html>)
+
 | Page | What it is |
 |---|---|
 | `index.html` | The interactive graphic (four linked views) and the write-up |
@@ -22,7 +25,7 @@ world looks like, or only when we get there?
 ## Step 1 (optional): Rebuild the data
 
 **In Google Colab:** open `pipeline/cmip6_pipeline.ipynb` in [Colab](https://colab.research.google.com)
-(File → Upload notebook, or `https://colab.research.google.com/github/<user>/<repo>/blob/main/pipeline/cmip6_pipeline.ipynb`)
+(File → Upload notebook, or `https://colab.research.google.com/github/Da0t/dsc106-project3/blob/main/pipeline/cmip6_pipeline.ipynb`)
 and choose **Runtime → Run all** (30 to 60 minutes). It asks once for Google Drive access, keeps finished models
 there, and saves `models.json` and `series.json` to `My Drive/dsc106_project3_data/`. Copy them into `data/`.
 
@@ -50,10 +53,10 @@ will not work, because browsers block reading the JSON files from `file://`.
 
 ## Step 3: Publish on GitHub Pages
 
-1. Create a **public** GitHub repository and push this folder as the repository root.
-2. **Settings → Pages → Build and deployment:** Source "Deploy from a branch", branch `main`, folder `/ (root)`.
-3. After a minute the site is at `https://<user>.github.io/<repo>/`. The "Source code" link in the footer fills
-   itself in from that address.
+Already set up for this repository: **Settings → Pages** deploys branch `main` from `/ (root)`, and every push to
+`main` updates <https://da0t.github.io/dsc106-project3/> within a minute or two. The "Source code" link in the
+footer fills itself in from that address. For a fresh copy elsewhere: make the repository **public**, push this
+folder as its root, and choose Source "Deploy from a branch", branch `main`, folder `/ (root)`.
 
 ## Deadlines (Fall 2026, from [dsc106.com](https://dsc106.com/projects/project3/))
 
@@ -70,8 +73,9 @@ days and are not accepted more than 48 hours late, and late submissions may be l
 ## Checkpoint video (due Thu 11/5, 11:59 PM, mp4, 2:00 max, with voiceover)
 
 1. Team name and members are in `js/team.js` (add the team name there if you have one).
-2. Open `checkpoint.html`, follow `docs/VIDEO_SCRIPT.md`, and finish on `index.html` for "current progress".
-   The script covers the five items the course page asks for. Not every member has to appear in the video.
+2. Open the live `checkpoint.html`, follow `docs/VIDEO_SCRIPT.md` (the real numbers are already filled in), and
+   finish on `index.html` for "current progress". The script covers the five items the course page asks for.
+   Not every member has to appear in the video.
 3. Record with sound:
    * **Mac:** Cmd+Shift+5 records a `.mov`. Convert it with `ffmpeg -i video.mov -c:v libx264 -c:a aac video.mp4`,
      or record in Zoom (a meeting by yourself, share screen, record to computer), which saves `.mp4` directly.
