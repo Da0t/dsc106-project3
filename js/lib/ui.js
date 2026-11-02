@@ -170,5 +170,41 @@ export function axisTitles(g, { w, h, margin }, xText, yText) {
   return { x, y };
 }
 
+// ---- Label placement: keep short labels off the data dots and off each other ----------------------
+/** The box a short label covers at a spot (y is its baseline), including its 2px halo. */
+function labelBox({ x, y, anchor }, width) {
+  const x0 = (anchor === 'end' ? x - width : x) - 2;
+  return [x0, y - 11, x0 + width + 4, y + 3];
+}
+
+/** The box an existing text element covers, as [x0, y0, x1, y1]. */
+export function textBox(text) {
+  const b = text.node().getBBox();
+  return [b.x, b.y, b.x + b.width, b.y + b.height];
+}
+
+/**
+ * Picks a spot for a short label. Tries the spots ({ x, y, anchor }, y = baseline) in order and returns
+ * the first that covers no dot and no other label, else the one that covers the fewest dots.
+ * dots: [x, y] centres of dots of radius r. boxes: labels already placed; the chosen box is added to it.
+ */
+export function placeLabel(spots, width, { dots = [], r = 5, boxes = [] } = {}) {
+  const clashes = (spot) => {
+    const [x0, y0, x1, y1] = labelBox(spot, width);
+    const onDots = dots.filter(([cx, cy]) => Math.hypot(Math.max(x0 - cx, 0, cx - x1), Math.max(y0 - cy, 0, cy - y1)) < r);
+    const onLabels = boxes.filter(([a0, b0, a1, b1]) => a0 < x1 && x0 < a1 && b0 < y1 && y0 < b1);
+    return onDots.length + 100 * onLabels.length;
+  };
+  let best = spots[0];
+  let fewest = Infinity;
+  for (const spot of spots) {
+    const n = clashes(spot);
+    if (n < fewest) [best, fewest] = [spot, n];
+    if (n === 0) break;
+  }
+  boxes.push(labelBox(best, width));
+  return best;
+}
+
 export const reducedMotion = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
 export const duration = (ms) => (reducedMotion() ? 0 : ms);
