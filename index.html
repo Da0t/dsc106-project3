@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Too Hot to Trust? | CMIP6 climate models</title>
+  <meta name="description" content="Some CMIP6 climate models warm faster than the evidence supports. Choose which models to trust and see how the forecast changes.">
+  <link rel="preload" href="fonts/libre-franklin-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="css/style.css">
+  <script type="module" src="js/main.js"></script>
+</head>
+<body>
+  <p class="banner" id="demo-banner" hidden>Demo data: synthetic placeholders. Run <code>pipeline/cmip6_pipeline.ipynb</code> to load the real CMIP6 output.</p>
+
+  <header class="wrap masthead">
+    <p class="byline">DSC 106 · Project 3</p>
+    <h1>Too Hot to Trust?</h1>
+    <p class="dek">Climate forecasts average dozens of models, but <span data-fill="n-hot">several</span> of these
+      <span data-fill="n-models">CMIP6</span> react to carbon dioxide more strongly than the IPCC considers likely.
+      <span data-fill="dek-effect"></span> But do the hot models describe a different world, or the same one
+      sooner?</p>
+  </header>
+
+  <main class="wrap">
+    <section aria-label="Interactive figure">
+      <div class="toolbar" role="toolbar" aria-label="Figure controls">
+        <div class="control">
+          <span class="control-label" id="lbl-scenario">Scenario</span>
+          <div class="seg" data-control="scenario" aria-labelledby="lbl-scenario"></div>
+        </div>
+        <div class="control">
+          <span class="control-label" id="lbl-screen">Models</span>
+          <div class="seg" data-control="screen" aria-labelledby="lbl-screen"></div>
+        </div>
+        <div class="control">
+          <span class="control-label" id="lbl-xmode">Compare by</span>
+          <div class="seg" data-control="xMode" aria-labelledby="lbl-xmode"></div>
+        </div>
+        <div class="legend" id="legend"></div>
+      </div>
+
+      <div class="views">
+        <figure class="view" id="view-screen">
+          <h2>Which models do you trust?</h2>
+          <p class="note">Drag across the dots to keep a range of models.</p>
+          <div class="chart"></div>
+          <p class="caption"></p>
+        </figure>
+
+        <figure class="view" id="view-ensemble">
+          <h2>What does that do to the forecast?</h2>
+          <p class="note">Warming since 1850–1900: the average of the models you kept, with the middle 90% shaded.</p>
+          <div class="chart"></div>
+          <p class="caption"></p>
+        </figure>
+
+        <figure class="view" id="view-whenwhat">
+          <h2>A different Arctic, or the same one sooner?</h2>
+          <p class="note" data-fill="whenwhat-note">20-year averages. Compare by warming level to line the models up at equal global warming.</p>
+          <div class="chart"></div>
+          <p class="caption"></p>
+        </figure>
+
+        <figure class="view" id="view-arrival">
+          <h2>When does each model reach +2°C?</h2>
+          <p class="note">First year each model's 20-year average reaches +2°C. Most sensitive at the top.</p>
+          <div class="chart"></div>
+          <p class="caption"></p>
+        </figure>
+      </div>
+
+      <div class="notes">
+        <p><strong>How to read it.</strong> Color is each model's sensitivity: its transient climate response (TCR),
+          how much it warms by the time CO<sub>2</sub> doubles. The shaded range is the IPCC's likely range for TCR,
+          1.4 to 2.2°C. Models you did not keep stay on the charts in gray. Scenarios: SSP1-2.6 low emissions,
+          SSP2-4.5 middle of the road, SSP5-8.5 very high emissions.</p>
+        <p><strong>Method.</strong> TCR is global warming in years 61 to 80 of an idealized run where CO<sub>2</sub>
+          rises 1% a year, minus the model's own control run. Temperatures are area-weighted averages of monthly
+          near-surface air temperature, averaged to years, relative to each model's 1850 to 1900 average. The Arctic
+          panel and warming levels use 20-year running means; a model reaches a level in the middle year of the first
+          20-year period at or above it. Spread is the range covered by the middle 90% of models.</p>
+        <p><strong>Source.</strong> CMIP6 model output via the public Google Cloud archive. We acknowledge the World
+          Climate Research Programme, which coordinated CMIP6, and the climate modeling groups for producing and
+          making available their model output. <span data-fill="generated"></span></p>
+      </div>
+
+      <p class="sr-only" id="sr-status" aria-live="polite"></p>
+
+      <details class="data-table">
+        <summary>Show the data as a table</summary>
+        <div class="table-scroll" id="data-table"></div>
+      </details>
+    </section>
+
+    <article class="writeup" id="writeup">
+      <h2>About this project</h2>
+
+      <h3>Why this question</h3>
+      <p class="placeholder">To be written by the team: what made us curious and why it matters.</p>
+
+      <h3>Design rationale</h3>
+      <p class="placeholder">To be written by the team: why we chose these visual encodings, interactions and colors,
+        and the alternatives we considered.</p>
+
+      <h3>Development process</h3>
+      <p class="placeholder">To be written by the team: how we split the work, roughly how many people-hours it took,
+        and which parts took the most time.</p>
+
+      <h3>Data and methods</h3>
+      <p>All data come from CMIP6, the latest round of the Coupled Model Intercomparison Project, read from the
+        public Google Cloud copy of the archive. We use monthly near-surface air temperature from one ensemble member
+        per model and five experiments: the pre-industrial control run, the idealized 1%-per-year CO<sub>2</sub>
+        run, the historical run (1850 to 2014), and the SSP1-2.6, SSP2-4.5 and SSP5-8.5 scenarios (2015 to 2100).
+        <span data-fill="n-models-sentence"></span></p>
+      <ol>
+        <li>Global and Arctic (north of 66.5°N) averages, weighting each grid cell by the cosine of its
+          latitude.</li>
+        <li>Calendar-year means of the monthly values, complete years only.</li>
+        <li>TCR: warming averaged over years 61 to 80 of the 1%-per-year run (CO<sub>2</sub> doubles at year 70),
+          minus the control run over the same years after removing its slow drift with a straight-line fit.</li>
+        <li>Historical and scenario runs joined into one 1850 to 2100 series, relative to the 1850 to 1900 average;
+          end-of-century warming is the 2081 to 2100 average.</li>
+        <li>Warming levels from a 20-year centered running mean.</li>
+      </ol>
+      <p class="small">The 1.4 to 2.2°C range is the IPCC Sixth Assessment Report's likely range for TCR, the
+        screen proposed by Hausfather et al. (2022). It is a published reference value, not additional data. With
+        one ensemble member per model, natural variability adds about ±0.1°C of noise to each TCR.</p>
+
+      <h3>Sources</h3>
+      <ul class="small">
+        <li>Hausfather, Z. et al. (2022). <a href="https://www.nature.com/articles/d41586-022-01192-2">Climate
+          simulations: recognize the 'hot model' problem</a>. <em>Nature</em> 605, 26–29.</li>
+        <li>IPCC (2021). <a href="https://www.ipcc.ch/report/ar6/wg1/">Climate Change 2021: The Physical Science
+          Basis</a>, chapters 4 and 7.</li>
+        <li>Eyring, V. et al. (2016). <a href="https://doi.org/10.5194/gmd-9-1937-2016">Overview of the Coupled
+          Model Intercomparison Project Phase 6</a>. <em>Geoscientific Model Development</em> 9, 1937–1958.</li>
+        <li><a href="https://console.cloud.google.com/marketplace/product/noaa-public/cmip6">CMIP6 public dataset
+          on Google Cloud</a>.</li>
+      </ul>
+    </article>
+  </main>
+
+  <footer class="wrap">
+    <div class="footer-rule">
+      <p>DSC 106 Project 3 · Charts made with <a href="https://d3js.org">D3</a> ·
+        <a href="checkpoint.html">Exploratory graphs</a> · <a id="repo-link" href="https://github.com">Source code</a></p>
+    </div>
+  </footer>
+</body>
+</html>

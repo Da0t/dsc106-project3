@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Exploratory graphs | Too Hot to Trust?</title>
+  <link rel="preload" href="fonts/libre-franklin-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="css/style.css">
+  <script type="module" src="js/checkpoint.js"></script>
+</head>
+<body>
+  <p class="banner" id="demo-banner" hidden>Demo data: synthetic placeholders. Run <code>pipeline/cmip6_pipeline.ipynb</code> before recording.</p>
+
+  <header class="wrap masthead">
+    <p class="byline">DSC 106 · Project 3 · Checkpoint</p>
+    <h1>Too Hot to Trust?</h1>
+    <p class="team" id="team"></p>
+  </header>
+
+  <main class="wrap">
+    <section class="section" aria-labelledby="h-data">
+      <p class="kicker">The dataset</p>
+      <h2 id="h-data">CMIP6: the world's climate models, run through the same experiments</h2>
+      <p class="what">Every modeling center runs the same experiments, so the models can be compared side by side.
+        We read the public Google Cloud copy of the archive and use one variable, monthly near-surface air
+        temperature, from five experiments per model.</p>
+      <dl class="facts" id="facts"></dl>
+    </section>
+
+    <section class="section" aria-labelledby="h-graphs">
+      <p class="kicker">Exploratory graphs</p>
+      <h2 id="h-graphs">Six things we found, in the order we found them</h2>
+      <div class="legend legend-row" id="legend"></div>
+      <div class="views">
+        <figure class="view"><p class="kicker">1 · Spread</p><h2 data-title="c1">How far apart are the models?</h2>
+          <p class="note">Global warming in every model under SSP2-4.5. Bold line: the average of all models.</p>
+          <div class="chart" id="c1"></div></figure>
+        <figure class="view"><p class="kicker">2 · Sources of uncertainty</p><h2 data-title="c2">Is the future uncertain because of us, or the models?</h2>
+          <p class="note">Spread of 20-year average warming relative to 1995–2014, across models and scenarios.</p>
+          <div class="chart" id="c2"></div></figure>
+        <figure class="view"><p class="kicker">3 · Sensitivity</p><h2 data-title="c3">Do the most sensitive models warm the most?</h2>
+          <p class="note">Each dot is one model, SSP2-4.5. Line: least-squares fit across all models.</p>
+          <div class="chart" id="c3"></div></figure>
+        <figure class="view"><p class="kicker">4 · Screening</p><h2 data-title="c4">What happens to the forecast without them?</h2>
+          <p class="note">Warming by 2081–&#8288;2100. Bars: the middle 90% of models. Dots: the average.</p>
+          <div class="chart" id="c4"></div></figure>
+        <figure class="view"><p class="kicker">5 · Timing</p><h2 data-title="c5">When does each model reach +2°C?</h2>
+          <p class="note">First year the 20-year average reaches +2°C, SSP2-4.5. Vertical lines: medians.</p>
+          <div class="chart" id="c5"></div></figure>
+        <figure class="view"><p class="kicker">6 · Pattern</p><h2 data-title="c6">Same year or same warming?</h2>
+          <p class="note">Arctic warming in each model, SSP2-4.5: in the year the average model reaches +2°C, and when the model itself does.</p>
+          <div class="chart" id="c6"></div></figure>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="h-question">
+      <p class="kicker">Our question</p>
+      <p class="question" id="h-question">Is CMIP6's scariest future driven by models that run too hot, and does that
+        change what a warmer world looks like, or only when we get there?</p>
+      <p class="what">Final graphic: four linked views. Choose models by sensitivity, see the projection change,
+        switch from comparing by year to comparing by warming level, and see when each model reaches +2°C.</p>
+      <p><a class="text-link" href="index.html">Open the interactive graphic</a></p>
+    </section>
+  </main>
+
+  <footer class="wrap">
+    <div class="footer-rule">
+      <p>DSC 106 Project 3 · Charts made with <a href="https://d3js.org">D3</a> from the same data files as the
+        <a href="index.html">interactive graphic</a>. <span id="generated"></span></p>
+    </div>
+  </footer>
+</body>
+</html>
