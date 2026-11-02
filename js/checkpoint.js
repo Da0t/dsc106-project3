@@ -5,7 +5,7 @@ import {
   loadData, LIKELY, hasRun, ols, ensembleByYear, timingVsPattern, medianYear, fmtC, fmtAbsC, fmtTcr, makeTcrColor,
   readPalette,
 } from './lib/core.js';
-import { makeChart, yAxis, xAxis, axisTitles, createTooltip, renderLegend } from './lib/ui.js';
+import { makeChart, yAxis, xAxis, axisTitles, createTooltip, renderLegend, placeLabel, textBox } from './lib/ui.js';
 import { TEAM } from './team.js';
 
 const data = await loadData();
@@ -216,10 +216,12 @@ facts.forEach(([k, v]) => { dl.append('dt').text(k); dl.append('dd').text(v); })
   const cy = (m) => yb(m.id) + yb.bandwidth() / 2;
   const later = w + 30;
   const likely = rows.filter((m) => m.tcr >= LIKELY[0] && m.tcr <= LIKELY[1]);
+  const taken = [];
   if (likely.length) {
     const top = yb(likely[0].id), bottom = yb(likely[likely.length - 1].id) + yb.bandwidth();
     g.append('rect').attr('class', 'wash').attr('x', 0).attr('width', w).attr('y', top).attr('height', bottom - top);
-    g.append('text').attr('class', 'label-muted').attr('x', 6).attr('y', bottom - 6).attr('text-anchor', 'start').text('IPCC likely range');
+    taken.push(textBox(g.append('text').attr('class', 'label-muted').attr('x', 6).attr('y', bottom - 6)
+      .attr('text-anchor', 'start').text('IPCC likely range')));
   }
   g.append('g').attr('class', 'grid').call(d3.axisBottom(x).ticks(6).tickSize(h).tickFormat(''));
   xAxis(g, h)(d3.axisBottom(x).ticks(6).tickFormat(d3.format('d')));
@@ -228,15 +230,20 @@ facts.forEach(([k, v]) => { dl.append('dt').text(k); dl.append('dd').text(v); })
   const groups = [rows.filter((m) => m.tcr > LIKELY[1]), rows.filter((m) => m.tcr <= LIKELY[1])].map((grp) => ({
     grp, median: medianYear(grp.map((m) => cross(m) ?? Infinity)),
   }));
+  const dotsAt = rows.map((m) => [cross(m) != null ? x(cross(m)) : later, cy(m)]);
   groups.forEach(({ grp, median }) => {
     if (median == null || !grp.length) return;
     const top = yb(grp[0].id), bottom = yb(grp[grp.length - 1].id) + yb.bandwidth();
     const mx = Number.isFinite(median) ? x(median) : later;
     g.append('line').attr('x1', mx).attr('x2', mx).attr('y1', top + 1).attr('y2', bottom - 1)
       .attr('stroke', pal.ink).attr('stroke-width', 1.25);
-    g.append('text').attr('class', 'label-strong halo').attr('x', Number.isFinite(median) ? mx + 5 : mx - 9)
-      .attr('text-anchor', Number.isFinite(median) ? 'start' : 'end').attr('y', top + 11)
+    // Beside the line, in the first row (from the top) where the label covers no dot or other label.
+    const label = g.append('text').attr('class', 'label-strong halo')
       .text(Number.isFinite(median) ? String(Math.round(median)) : 'after 2100');
+    const sides = Number.isFinite(median) ? [[5, 'start'], [-5, 'end']] : [[-9, 'end']];
+    const spot = placeLabel(grp.flatMap((m) => sides.map(([dx, anchor]) => ({ x: mx + dx, y: cy(m) + 4, anchor }))),
+      label.node().getComputedTextLength(), { dots: dotsAt, boxes: taken });
+    label.attr('x', spot.x).attr('y', spot.y).attr('text-anchor', spot.anchor);
   });
   hover(g.append('g').selectAll('circle').data(rows).join('circle')
     .attr('cx', (m) => (cross(m) != null ? x(cross(m)) : later)).attr('cy', cy).attr('r', 4)
