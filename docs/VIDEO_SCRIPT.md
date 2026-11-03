@@ -41,7 +41,7 @@ If the team picks a name, say it first: "Hi, we're [team name]: ..."
 > Six: but compare models at the same global warming instead of the same year, and the Arctic spread is
 > 2.8 degrees, not 4.6.
 
-**(4) Title and question** · 1:20 · "Our question" at the bottom of the page
+**(4) Title and question** · 1:20 · the question at the bottom of the checkpoint page
 > Our graphic is called Too Hot to Trust, and our question is: is CMIP6's scariest future driven by models that
 > run too hot, and does that change what a warmer world looks like, or only when we get there?
 
