@@ -95,16 +95,17 @@
       <h2>About this project</h2>
 
       <h3>Why this question</h3>
-      <p class="placeholder">To be written by the team: what made us curious and why it matters.</p>
+      <p class="placeholder">  Climate models do not all respond to greenhouse gases in the same way, and some CMIP6 models warm much faster than others. We became interested in whether these highly sensitive models are responsible for the most extreme future warming projections. Instead of treating every model as equally plausible, we wanted to let users explore what happens when different groups of models are included or excluded. Our main question is whether the hottest models describe a fundamentally different future climate, or whether they mainly predict that the same warming levels will be reached sooner.</p>
 
       <h3>Design rationale</h3>
-      <p class="placeholder">To be written by the team: why we chose these visual encodings, interactions and colors,
-        and the alternatives we considered.</p>
-
+      <p class="placeholder">  We designed the visualization as four linked views so that users can examine the same model selection from several perspectives. The first view uses model sensitivity, measured by transient climate response (TCR), to let users select which models they want to keep. The other views then update to show how that choice changes the projected warming range, Arctic warming, and the timing of the +2°C threshold. We use position as the main quantitative encoding because it makes differences between models easier to compare, while color consistently represents model sensitivity across the page. Models outside the current selection remain visible in gray so users can compare the selected subset with the full ensemble rather than losing that context completely.</p>
+      <p class="placeholder">  We also let users switch between comparing models by calendar year and by the same level of global warming. This interaction helps distinguish two different questions: when a model reaches a certain amount of warming and what the climate looks like once that warming level is reached. We considered using separate static charts for each comparison, but linked interactions make it easier to see how one model-selection decision affects all of the views at once. Tooltips, annotations, and the shaded IPCC likely range provide additional context without adding too much information directly to the charts.</p>
+      
       <h3>Development process</h3>
-      <p class="placeholder">To be written by the team: how we split the work, roughly how many people-hours it took,
-        and which parts took the most time.</p>
-
+      <p class="placeholder">  We began by exploring the CMIP6 data with six exploratory visualizations. These graphs helped us identify the strongest relationships between model sensitivity, future global warming, the timing of the +2°C threshold, and Arctic warming. Based on those findings, we narrowed the project to a smaller set of linked views rather than trying to show every variable in the dataset. We then built the interactions so that model selection, emissions scenario, and comparison mode update the related views consistently.</p>
+      <p class="placeholder">  The most challenging part of the project was coordinating the linked interactions while keeping the comparisons scientifically consistent. In particular, comparing models at the same calendar year is different from comparing them at the same global warming level, so the data processing and visual updates had to support both views correctly. We also spent time refining the scales, legends, annotations, and interaction behavior so that the visualization remained readable when many models were shown at once.</p>
+      <p class="placeholder">  Team contributions: </p>
+      
       <h3>Data and methods</h3>
       <p>All data come from CMIP6, the latest round of the Coupled Model Intercomparison Project, read from the
         public Google Cloud copy of the archive. We use monthly near-surface air temperature from one ensemble member
