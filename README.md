@@ -64,7 +64,7 @@ folder as its root, and choose Source "Deploy from a branch", branch `main`, fol
 |---|---|
 | Tue 11/3 | Lecture: "How will Project 3 be graded?" Worth hearing before the final polish. |
 | Thu 11/5, 11:59 PM | **Checkpoint video** on Gradescope (`checkpoint.html`, then `index.html` for progress) |
-| Wed 11/11, 11:59 PM | **Final**: GitHub Pages URL on Gradescope (`index.html` is what gets graded) |
+| Fri 11/13, 11:59 PM | **Final**: GitHub Pages URL on Gradescope (`index.html` is what gets graded) |
 | Thu 11/19 | Project 3 peer review (1% of the course grade; details not posted yet) |
 
 Project 3 is 14% of the course grade: 13% for the submission, 1% for peer review. Projects can use up to 2 slip
@@ -82,7 +82,7 @@ days and are not accepted more than 48 hours late, and late submissions may be l
    * **Windows:** Win+G (Xbox Game Bar) records `.mp4`.
 4. One teammate uploads on Gradescope and **adds every member** to the submission.
 
-## Final submission checklist (Wed 11/11, 11:59 PM)
+## Final submission checklist (Fri 11/13, 11:59 PM)
 
 - [ ] The three "To be written by the team." lines in `index.html` replaced with your own write-up: why this
       question, design rationale (encodings, interactions, colors, alternatives considered) and development
